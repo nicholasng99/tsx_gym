@@ -1,0 +1,41 @@
+name: Call Submit Form
+
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: 'Days to run for next week (1=Mon, 5=Fri). Separate with spaces. Empty for all days.'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.12"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Run script
+      env:
+        MOCK_URL: ${{ secrets.MOCK_URL }}
+        TSX_URL: ${{ secrets.TSX_URL }}
+        NAME: ${{ secrets.NAME }}
+        EMAIL: ${{ secrets.EMAIL }}
+        COMPANY: ${{ secrets.COMPANY }}
+        PHONE: ${{ secrets.PHONE }}
+      run: |
+        if [[ -n "${{ github.event.inputs.days }}" ]]; then
+          python submit_form.py --days ${{ github.event.inputs.days }}
+        else
+          python submit_form.py
+        fi
