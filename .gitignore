@@ -1,2 +1,5 @@
 .idea
 .env
+*.pyc
+/.venv
+bookings.json

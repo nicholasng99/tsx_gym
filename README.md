@@ -1,68 +1,77 @@
-# TSX Gym Form Automation
+# TSX Gym Booking API
 
-This project automates the submission of gym booking forms for TSX using GitHub Actions.
+This project provides an API-first booking flow for TSX gym slots by submitting a Google Form.
+Date calculation logic is intentionally out of scope for this repository; callers pass an explicit date.
 
-## 🔧 Setup Instructions
+## Setup
 
-### 1. Fork or Clone the Repository
+1. Copy `.env.example` to `.env`.
+2. Fill in required values: `NAME`, `EMAIL`, `COMPANY`, `PHONE`, `TSX_URL`.
+3. Install dependencies:
 
-First, fork this repository to your own GitHub account or clone it locally.
+```bash
+pip install -r requirements.txt
+```
 
-### 2. Set up GitHub Secrets
+## MCP Server (stdio)
 
-To run the GitHub Action, you need to configure the following secrets in your repository:
+Start the MCP server:
 
-#### How to Add Secrets:
+```bash
+python mcp_server.py
+```
 
-1. Go to your repository on GitHub
-2. Click on **Settings** tab
-3. In the left sidebar, click **Secrets and variables** → **Actions**
-4. Click **New repository secret**
-5. Add each secret listed below
+## Add This Repo As MCP In An AI Tool
 
-#### Required Secrets:
+Most AI tools that support MCP use a JSON config with an `mcpServers` section.
 
-| Secret Name | Description | Example Value |
-|-------------|-------------|---------------|
-| `NAME` | Your full name for the booking form | `John Doe` |
-| `EMAIL` | Your email address | `john.doe@company.com` |
-| `COMPANY` | Your company name | `Acme Corp` |
-| `PHONE` | Your phone number | `12345678` |
-| `TSX_URL` | The actual TSX form URL | `https://docs.google.com/forms/d/e/.../formResponse` |
-| `MOCK_URL` | URL for testing (optional) | `https://docs.google.com/forms/d/e/.../formResponse` |
+1. Make sure dependencies are installed in this repo.
+2. Add a server entry for `tsx-gym-booker` that runs `mcp_server.py` with your virtual environment Python executable.
+3. Set environment variables in your AI tool config for `NAME`, `EMAIL`, `COMPANY`, `PHONE`, and `TSX_URL`.
+4. If your MCP host requires explicit transport arguments, configure stdio transport in that same server entry.
 
-#### Finding the Form URL:
+Sample JSON with env vars:
 
-To get the correct `TSX_URL`:
+```json
+{
+   "mcpServers": {
+      "tsx-gym-booker": {
+         "command": "D:/others/tsx_gym/.venv/Scripts/python.exe",
+         "args": [
+            "D:/others/tsx_gym/mcp_server.py",
+            "--transport",
+            "stdio"
+         ],
+         "env": {
+            "NAME": "Your Full Name",
+            "EMAIL": "your.email@company.com",
+            "COMPANY": "Your Company Name",
+            "PHONE": "12345678",
+            "TSX_URL": "https://docs.google.com/forms/d/e/.../formResponse"
+         }
+      }
+   }
+}
+```
 
-1. Open the TSX booking form in your browser
-2. Copy the unique form id from the URL after `/forms/d/e/` and before the next `/`
-3. Replace `...` with your unique form id `https://docs.google.com/forms/d/e/.../formResponse`
-4. Add this URL to your GitHub secret as `TSX_URL`
+If your MCP host defaults to stdio, remove `--transport` and `stdio` from `args`.
 
-### 3. Running the Action
+After saving the config, restart the AI tool and confirm the MCP server `tsx-gym-booker` is connected.
 
-#### Manual Trigger:
-**Note: The script only books weekdays from next week, not the current week**
+Tool: `book_gym_slot`
 
-1. Go to the **Actions** tab in your repository
-2. Click on **Call Submit Form** workflow
-3. Click **Run workflow**
-4. Optionally specify days (1=Monday, 2=Tuesday, etc.)
-   - Example: `1 3 5` for Monday, Wednesday, Friday
-   - Leave empty to book all weekdays
-5. Click **Run workflow**
+Inputs:
+1. `date` (required): `YYYY-MM-DD`
+2. `time_slot` (optional, default `11.00am to 1.00pm`): one of:
+   - `7.00am to 9.00am`
+   - `9.00am to 11.00am`
+   - `11.00am to 1.00pm`
+   - `1.00pm to 3.00pm`
+   - `4.00pm to 6.00pm`
+   - `6.00pm to 8.00pm`
 
-### Logs and Debugging:
-
-- Check the Actions tab for detailed logs
-- Review the Python script output in the action logs
-
-## 📝 Local Development
-
-For local testing:
-
-1. Copy `.env.example` to `.env`
-2. Fill in your actual values
-3. Install dependencies: `pip install -r requirements.txt`
-4. Run: `python submit_form.py`
+Notes:
+1. Identity/profile values are read from environment variables only.
+2. One booking is submitted per tool call.
+3. Past dates are rejected.
+4. MCP always submits to `TSX_URL`.
