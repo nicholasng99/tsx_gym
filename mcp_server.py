@@ -1,3 +1,4 @@
+from booking_log import get_bookings, record_booking
 from booking_service import BOOKING_TIME_SLOTS, BookingError, submit_booking
 from mcp.server.fastmcp import FastMCP
 
@@ -24,13 +25,30 @@ def book_gym_slot(date: str, time_slot: str = "11.00am to 1.00pm") -> dict:
             "allowed_time_slots": list(BOOKING_TIME_SLOTS),
         }
 
-    return {
+    response = {
         "ok": result.success,
         "message": result.message,
         "status_code": result.status_code,
         "date": date,
         "time_slot": time_slot,
         "used": "TSX_URL",
+    }
+
+    if result.success:
+        record_booking(date, time_slot)
+
+    return response
+
+
+@mcp.tool(
+    name="get_booked_slots",
+    description="Return all previously booked gym slots stored in the local booking log.",
+)
+def get_booked_slots() -> dict:
+    bookings = get_bookings()
+    return {
+        "count": len(bookings),
+        "bookings": bookings,
     }
 
 
