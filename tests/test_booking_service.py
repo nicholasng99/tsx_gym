@@ -1,8 +1,8 @@
 import unittest
 from datetime import date, timedelta
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
-from booking_service import BookingError, submit_booking, validate_target_date
+from booking_service import BookingError, SubmissionResult, submit_booking, validate_target_date
 
 
 class TestBookingService(unittest.TestCase):
@@ -65,3 +65,54 @@ class TestBookingService(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestBookGymSlotRecording(unittest.TestCase):
+    """Verify that book_gym_slot records on success but not on failure."""
+
+    _FUTURE_DATE = (date.today() + timedelta(days=7)).strftime("%Y-%m-%d")
+    _TIME_SLOT = "11.00am to 1.00pm"
+
+    @patch("mcp_server.record_booking")
+    @patch("mcp_server.submit_booking")
+    def test_record_booking_called_on_success(
+        self, mock_submit: MagicMock, mock_record: MagicMock
+    ) -> None:
+        mock_submit.return_value = SubmissionResult(
+            success=True, status_code=200, message="Form submitted successfully"
+        )
+
+        from mcp_server import book_gym_slot
+
+        result = book_gym_slot(date=self._FUTURE_DATE, time_slot=self._TIME_SLOT)
+
+        self.assertTrue(result["ok"])
+        mock_record.assert_called_once_with(self._FUTURE_DATE, self._TIME_SLOT)
+
+    @patch("mcp_server.record_booking")
+    @patch("mcp_server.submit_booking")
+    def test_record_booking_not_called_on_http_failure(
+        self, mock_submit: MagicMock, mock_record: MagicMock
+    ) -> None:
+        mock_submit.return_value = SubmissionResult(
+            success=False, status_code=500, message="Form submission failed with status 500"
+        )
+
+        from mcp_server import book_gym_slot
+
+        result = book_gym_slot(date=self._FUTURE_DATE, time_slot=self._TIME_SLOT)
+
+        self.assertFalse(result["ok"])
+        mock_record.assert_not_called()
+
+    @patch("mcp_server.record_booking")
+    @patch("mcp_server.submit_booking", side_effect=BookingError("bad date"))
+    def test_record_booking_not_called_on_booking_error(
+        self, mock_submit: MagicMock, mock_record: MagicMock
+    ) -> None:
+        from mcp_server import book_gym_slot
+
+        result = book_gym_slot(date="not-a-date", time_slot=self._TIME_SLOT)
+
+        self.assertFalse(result["ok"])
+        mock_record.assert_not_called()
