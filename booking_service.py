@@ -18,6 +18,8 @@ BOOKING_TIME_SLOTS: Final[tuple[str, ...]] = (
     "6.00pm to 8.00pm",
 )
 
+DEFAULT_TIME_SLOT: Final[str] = "11.00am to 1.00pm"
+
 
 class BookingError(ValueError):
     pass
@@ -93,7 +95,7 @@ def _resolve_form_url(use_mock_url: bool) -> str:
 
 def submit_booking(
     target_date: str,
-    time_slot: str,
+    time_slot: str = DEFAULT_TIME_SLOT,
     *,
     use_mock_url: bool = False,
     timeout_seconds: int = 20,

@@ -62,7 +62,7 @@ Tool: `book_gym_slot`
 
 Inputs:
 1. `date` (required): `YYYY-MM-DD`
-2. `time_slot` (required): one of:
+2. `time_slot` (optional, default `11.00am to 1.00pm`): one of:
    - `7.00am to 9.00am`
    - `9.00am to 11.00am`
    - `11.00am to 1.00pm`

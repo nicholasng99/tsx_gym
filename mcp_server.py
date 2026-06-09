@@ -11,7 +11,7 @@ mcp = FastMCP("tsx-gym-booker")
         "Personal details are loaded from environment variables only."
     ),
 )
-def book_gym_slot(date: str, time_slot: str) -> dict:
+def book_gym_slot(date: str, time_slot: str = "11.00am to 1.00pm") -> dict:
     try:
         result = submit_booking(
             target_date=date,

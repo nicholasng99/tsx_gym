@@ -1,7 +1,16 @@
-from booking_service import BOOKING_TIME_SLOTS, BookingError, submit_booking
+from booking_service import (
+    BOOKING_TIME_SLOTS,
+    DEFAULT_TIME_SLOT,
+    BookingError,
+    submit_booking,
+)
 
 
-def submit_form(target_date: str, time_slot: str, use_mock_url: bool = False) -> bool:
+def submit_form(
+    target_date: str,
+    time_slot: str = DEFAULT_TIME_SLOT,
+    use_mock_url: bool = False,
+) -> bool:
     """
     Submit the Google Form for a specific date and time slot.
 
