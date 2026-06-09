@@ -51,6 +51,21 @@ class Entry(StrEnum):
     PAGE_HISTORY = "pageHistory"
 
 
+class MockEntry(StrEnum):
+    # Mock form ids
+    NAME = "entry.550441580"
+    EMAIL = "entry.2106184693"
+    COMPANY = "entry.345562338"
+    NUMBER = "entry.2121367340"
+    DATE = "entry.2066446698"
+    TIME = "entry.269571675"
+    ACK_1 = "entry.177165065"
+    ACK_2 = "entry.46123323"
+    ACK_3 = "entry.2059833228"
+    ACK_4 = "entry.773046542"
+    PAGE_HISTORY = "pageHistory"
+
+
 def normalize_time_slot(time_slot: str) -> str:
     normalized = " ".join(time_slot.strip().lower().split())
     canonical_map = {slot.lower(): slot for slot in BOOKING_TIME_SLOTS}
@@ -108,18 +123,19 @@ def submit_booking(
     profile = _load_profile_from_env()
     form_url = _resolve_form_url(use_mock_url)
 
+    e = MockEntry if use_mock_url else Entry
     form_data = {
-        Entry.NAME: profile["NAME"],
-        Entry.EMAIL: profile["EMAIL"],
-        Entry.COMPANY: profile["COMPANY"],
-        Entry.NUMBER: profile["PHONE"],
-        Entry.DATE: safe_date,
-        Entry.TIME: safe_slot,
-        Entry.ACK_1: "Yes",
-        Entry.ACK_2: "Yes",
-        Entry.ACK_3: "Yes",
-        Entry.ACK_4: "Yes",
-        Entry.PAGE_HISTORY: "0,1,2",
+        e.NAME: profile["NAME"],
+        e.EMAIL: profile["EMAIL"],
+        e.COMPANY: profile["COMPANY"],
+        e.NUMBER: profile["PHONE"],
+        e.DATE: safe_date,
+        e.TIME: safe_slot,
+        e.ACK_1: "Yes",
+        e.ACK_2: "Yes",
+        e.ACK_3: "Yes",
+        e.ACK_4: "Yes",
+        e.PAGE_HISTORY: "0,1,2",
     }
 
     try:
