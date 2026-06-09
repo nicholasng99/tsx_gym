@@ -5,7 +5,10 @@ from enum import StrEnum
 from typing import Final
 
 import requests
+import urllib3
 from dotenv import load_dotenv
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 load_dotenv()
 
@@ -120,7 +123,7 @@ def submit_booking(
     }
 
     try:
-        response = requests.post(form_url, data=form_data, timeout=timeout_seconds)
+        response = requests.post(form_url, data=form_data, timeout=timeout_seconds, verify=False)
     except requests.exceptions.RequestException as exc:
         return SubmissionResult(
             success=False,
