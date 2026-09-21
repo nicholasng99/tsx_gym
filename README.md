@@ -30,21 +30,40 @@ Settings.
 2. Click the days you want on the calendar. Weekends, today, and any day whose
    cutoff has passed are greyed out — bookings close at **4 pm on the working
    day before** the slot, so Friday 4 pm is the cutoff for Monday (per the
-   gym's T&Cs).
-3. Pick a time slot. It applies to every selected day; each day also gets its
-   own dropdown if you want a different slot for one of them.
-4. Click **Book N days**.
+   gym's T&Cs). Days you have already booked are shown in green (hover for the
+   slot); days waiting in the queue have a dashed orange outline. Neither can
+   be selected again, since the gym allows one slot per person per day.
+3. Pick a time slot from the dropdown. It applies to every selected day; each
+   day also gets its own dropdown in the list above if you want a different
+   slot for one of them.
+4. Click **Book (N)**.
 
-The days are queued and booked one after another in a single tab: for each
-one the extension fills the email page, the booking details and the
-declarations, submits, and moves on when the confirmation page appears. The
-popup shows the queue with live status and a desktop notification fires for
-each result. Recent bookings are listed underneath.
+The ⚙ button in the top-right opens Settings.
 
-If Google rejects a field, that job fails with the validation message shown on
-the form and the queue continues with the next day. If a reCAPTCHA image
-challenge appears (rare when signed in), solve it and the submission
-continues — the extension never touches the captcha.
+### The queue
+
+Clicking **Book** does not submit anything by itself — it adds one job per
+selected day to the queue, and the queue runs them one after another in a
+single tab. For each job the extension opens the form, fills the email page,
+the booking details and the declarations, submits, and moves on when the
+confirmation page appears. The **Queue** pane shows each job's live status and
+a desktop notification fires for each result.
+
+Rules:
+
+- A job is added only for days that are not already queued or running, and
+  that are still before their cutoff at the moment you click Book.
+- Jobs run strictly one at a time, in date order, all in the same tab. Closing
+  that tab fails the running job and the next one starts.
+- A job finishes as **booked** when the confirmation page appears, or
+  **failed** if Google flags a field, the page layout is not recognised, the
+  tab is closed, or nothing happens for 3 minutes. A failure never stops the
+  queue; the next job starts immediately.
+- Booked jobs stay in the pane for 10 minutes and are recorded in the history
+  that colours the calendar green. Failed jobs stay until you next click Book,
+  which keeps only the last 5 finished jobs.
+- If a reCAPTCHA image challenge appears (rare when signed in), solve it in
+  the tab and the job continues — the extension never touches the captcha.
 
 ## Sharing
 
@@ -81,7 +100,7 @@ appears as `[[<id>,`. Update the JSON, save, done. The cutoff hour is
 | `config.js` | Form URL, entry ids, time slots, cutoff hour (shared by all scripts) |
 | `content.js` | Runs on each form page, fills it and clicks Next/Submit |
 | `background.js` | Runs the queue one job at a time; desktop notifications |
-| `popup.html/js` | Calendar + slot picker, queue status, history |
+| `popup.html/js` | Calendar + slot picker, queue status |
 | `options.html/js` | Profile and form settings |
 | `style.css` | Shared styling |
 | `icons/` | 💪 toolbar icon (16–128 px) |

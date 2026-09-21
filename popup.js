@@ -2,6 +2,9 @@ const $ = (id) => document.getElementById(id);
 
 // Selected days, as { "YYYY-MM-DD": timeSlot }.
 const selected = new Map();
+// Days already booked (from history) and days queued/running, keyed by ISO date.
+const booked = new Map();
+const pending = new Map();
 let viewYear, viewMonth;
 
 (function init() {
@@ -28,7 +31,7 @@ let viewYear, viewMonth;
     renderSelected();
   });
   $("book").addEventListener("click", book);
-  for (const id of ["open-options", "open-options-2"]) {
+  for (const id of ["open-options", "open-settings"]) {
     $(id).addEventListener("click", (e) => {
       e.preventDefault();
       chrome.runtime.openOptionsPage();
@@ -77,7 +80,15 @@ function renderCalendar() {
     const btn = document.createElement("button");
     btn.className = "day";
     btn.textContent = day;
-    if (isWeekend(date)) {
+    if (booked.has(iso)) {
+      btn.classList.add("booked");
+      btn.disabled = true;
+      btn.title = "Booked: " + booked.get(iso);
+    } else if (pending.has(iso)) {
+      btn.classList.add("pending");
+      btn.disabled = true;
+      btn.title = pending.get(iso) === "running" ? "Booking now…" : "Queued";
+    } else if (isWeekend(date)) {
       btn.disabled = true;
     } else if (!isBookable(date)) {
       btn.disabled = true;
@@ -114,7 +125,7 @@ function renderSelected() {
     li.append(label, sel);
     list.appendChild(li);
   }
-  $("book").textContent = dates.length ? `Book ${dates.length} day${dates.length > 1 ? "s" : ""}` : "Book";
+  $("book").textContent = dates.length ? `Book (${dates.length})` : "Book";
   $("book").disabled = dates.length === 0;
 }
 
@@ -152,6 +163,12 @@ async function renderState() {
   ]);
   $("setup-warning").classList.toggle("hidden", isProfileComplete(profile));
 
+  booked.clear();
+  for (const h of history) if (!booked.has(h.date)) booked.set(h.date, h.timeSlot);
+  pending.clear();
+  for (const j of queue) if (j.status === "queued" || j.status === "running") pending.set(j.date, j.status);
+  renderCalendar();
+
   const active = queue.filter((j) => j.status !== "done" || Date.now() - j.finishedAt < 10 * 60 * 1000);
   $("queue").replaceChildren(
     ...active.map((j) => {
@@ -167,15 +184,6 @@ async function renderState() {
     })
   );
   if (!active.length) $("queue").appendChild(muted("Nothing queued"));
-
-  $("history").replaceChildren(
-    ...history.slice(0, 6).map((h) => {
-      const li = document.createElement("li");
-      li.textContent = `${formatDate(h.date)} — ${h.timeSlot}`;
-      return li;
-    })
-  );
-  if (!history.length) $("history").appendChild(muted("None yet"));
 }
 
 // ---- cutoff rule ----------------------------------------------------------
