@@ -1,2 +1,7 @@
 .idea
 .env
+.venv/
+.pytest_cache/
+__pycache__/
+*.pyc
+bookings.json

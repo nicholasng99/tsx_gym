@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TSX Gym Booker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="popup">
+<main class="card">
+  <h1>TSX Gym Booker</h1>
+
+  <div id="setup-warning" class="warn hidden">
+    Profile not set up yet. <a href="#" id="open-options">Open settings</a>.
+  </div>
+
+  <div class="cal-header">
+    <button class="icon-btn" id="prev-month" title="Previous month">&lsaquo;</button>
+    <span id="month-label"></span>
+    <button class="icon-btn" id="next-month" title="Next month">&rsaquo;</button>
+  </div>
+  <div class="cal-grid" id="calendar"></div>
+  <p class="hint">Bookings close at 4 pm the working day before (Friday 4 pm for Monday).</p>
+
+  <label>Time slot for selected days
+    <select id="slot"></select>
+  </label>
+
+  <ul id="selected" class="selected"></ul>
+
+  <div class="actions">
+    <button id="book" disabled>Book</button>
+    <button class="secondary" id="clear">Clear</button>
+  </div>
+
+  <h2>Queue</h2>
+  <ul id="queue" class="queue"></ul>
+
+  <h2>Recent bookings</h2>
+  <ul id="history" class="history"></ul>
+
+  <p class="footer"><a href="#" id="open-options-2">Settings</a></p>
+</main>
+
+  <script src="config.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
