@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TSX Gym Booker – Settings</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="options">
+  <h1>Settings</h1>
+
+  <h2>Your details</h2>
+  <label>Name <input id="name"></label>
+  <label>Company email <input id="email" type="email"></label>
+  <label>Company name <input id="company"></label>
+  <label>Contact number <input id="phone"></label>
+
+  <h2>Form</h2>
+  <label>Form URL (viewform) <input id="formUrl"></label>
+  <label>Entry IDs (JSON, edit only if the form changes)
+    <textarea id="ids" rows="10" spellcheck="false"></textarea>
+  </label>
+
+  <button id="save">Save</button>
+  <span id="saved" class="muted"></span>
+
+  <script src="config.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

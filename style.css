@@ -1,0 +1,40 @@
+body { font: 14px/1.4 system-ui, sans-serif; margin: 0; padding: 14px; color: #222; }
+.popup { width: 300px; }
+.options { max-width: 560px; margin: 0 auto; }
+h1 { font-size: 16px; margin: 0 0 12px; }
+h2 { font-size: 13px; margin: 16px 0 6px; color: #555; text-transform: uppercase; letter-spacing: .04em; }
+label { display: block; margin-bottom: 10px; font-weight: 600; }
+input, select, textarea { display: block; width: 100%; box-sizing: border-box; margin-top: 4px; padding: 6px 8px; font: inherit; font-weight: 400; border: 1px solid #bbb; border-radius: 4px; }
+textarea { font-family: ui-monospace, monospace; font-size: 12px; }
+button { padding: 8px 14px; font: inherit; font-weight: 600; color: #fff; background: #673ab7; border: 0; border-radius: 4px; cursor: pointer; }
+button:disabled { background: #aaa; cursor: default; }
+.status { margin-top: 12px; min-height: 1.4em; }
+.status.running { color: #555; }
+.status.ok { color: #1b7f3b; }
+.status.err { color: #b3261e; }
+.warn { background: #fff3cd; border: 1px solid #ffe08a; padding: 8px; border-radius: 4px; margin-bottom: 12px; }
+.hidden { display: none; }
+.history { padding-left: 18px; margin: 0; }
+.muted { color: #777; }
+.footer { margin: 14px 0 0; font-size: 12px; }
+
+/* calendar */
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; font-weight: 600; }
+.icon-btn { background: none; color: #673ab7; font-size: 20px; line-height: 1; padding: 2px 10px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 12px; }
+.dow { text-align: center; font-size: 11px; color: #777; padding-bottom: 2px; }
+.day { padding: 6px 0; background: #f3f0fa; color: #222; font-weight: 500; border-radius: 4px; }
+.day:hover:not(:disabled) { background: #e2dbf5; }
+.day:disabled { background: transparent; color: #bbb; cursor: default; }
+.day.today { outline: 1px solid #673ab7; }
+.day.selected, .day.selected:hover { background: #673ab7; color: #fff; }
+.selected { list-style: none; padding: 0; margin: 0 0 10px; }
+.selected li { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.selected li span { flex: 0 0 100px; }
+.selected li select { margin: 0; padding: 3px 6px; }
+.actions { display: flex; gap: 8px; }
+button.secondary { background: #eee; color: #333; }
+.queue { padding-left: 18px; margin: 0; }
+.queue li.running { color: #555; }
+.queue li.done { color: #1b7f3b; }
+.queue li.failed { color: #b3261e; }

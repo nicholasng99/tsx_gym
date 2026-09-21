@@ -1,77 +1,54 @@
-# TSX Gym Booking API
+# TSX Gym Booker (Chrome extension)
 
-This project provides an API-first booking flow for TSX gym slots by submitting a Google Form.
-Date calculation logic is intentionally out of scope for this repository; callers pass an explicit date.
+Fills and submits the TSX gym booking Google Form from inside your own Chrome
+session. Because it runs in a signed-in browser, the form's invisible reCAPTCHA
+passes silently — which is why the old direct-POST approach stopped working.
 
-## Setup
+## Install (unpacked)
 
-1. Copy `.env.example` to `.env`.
-2. Fill in required values: `NAME`, `EMAIL`, `COMPANY`, `PHONE`, `TSX_URL`.
-3. Install dependencies:
+1. Open `chrome://extensions`.
+2. Turn on **Developer mode** (top right).
+3. Click **Load unpacked** and select this folder.
+4. Click the extension icon → **Settings**, fill in your name, company email,
+   company name and contact number, and save.
 
-```bash
-pip install -r requirements.txt
-```
+Make sure Chrome is signed in to a Google account (any account — it is only
+used so Google trusts the browser session; the form itself gets the email you
+enter in Settings).
 
-## MCP Server (stdio)
+## Use
 
-Start the MCP server:
+1. Click the extension icon.
+2. Click the days you want on the calendar (weekends and past days are
+   disabled). Pick a time slot — it applies to every selected day, and each
+   day also gets its own dropdown if you want a different slot for one of them.
+3. Click **Book N days**.
 
-```bash
-python mcp_server.py
-```
+The days are queued and booked one after another in a single tab: for each
+one the extension walks through the form (email page → booking details →
+declarations → Submit) and moves on to the next when the confirmation page
+appears. The popup shows the queue with live status, and a desktop
+notification fires for each result. Recent bookings are listed underneath.
 
-## Add This Repo As MCP In An AI Tool
+If Google rejects a field, that job fails with the validation message shown
+on the form and the queue continues with the next day. If the reCAPTCHA image
+challenge appears (rare when signed in), solve it and the submission
+continues — the extension does not interact with it.
 
-Most AI tools that support MCP use a JSON config with an `mcpServers` section.
+## When the form changes
 
-1. Make sure dependencies are installed in this repo.
-2. Add a server entry for `tsx-gym-booker` that runs `mcp_server.py` with your virtual environment Python executable.
-3. Set environment variables in your AI tool config for `NAME`, `EMAIL`, `COMPANY`, `PHONE`, and `TSX_URL`.
-4. If your MCP host requires explicit transport arguments, configure stdio transport in that same server entry.
+Everything form-specific lives in **Settings → Entry IDs** (defaults in
+[`config.js`](config.js)). To find the current ids, open the form's viewform
+page, view source, and search for `FB_PUBLIC_LOAD_DATA_`; each question's id
+appears as `[[<id>,`. Update the JSON, save, done.
 
-Sample JSON with env vars:
+## Files
 
-```json
-{
-   "mcpServers": {
-      "tsx-gym-booker": {
-         "command": "D:/others/tsx_gym/.venv/Scripts/python.exe",
-         "args": [
-            "D:/others/tsx_gym/mcp_server.py",
-            "--transport",
-            "stdio"
-         ],
-         "env": {
-            "NAME": "Your Full Name",
-            "EMAIL": "your.email@company.com",
-            "COMPANY": "Your Company Name",
-            "PHONE": "12345678",
-            "TSX_URL": "https://docs.google.com/forms/d/e/.../formResponse"
-         }
-      }
-   }
-}
-```
-
-If your MCP host defaults to stdio, remove `--transport` and `stdio` from `args`.
-
-After saving the config, restart the AI tool and confirm the MCP server `tsx-gym-booker` is connected.
-
-Tool: `book_gym_slot`
-
-Inputs:
-1. `date` (required): `YYYY-MM-DD`
-2. `time_slot` (optional, default `11.00am to 1.00pm`): one of:
-   - `7.00am to 9.00am`
-   - `9.00am to 11.00am`
-   - `11.00am to 1.00pm`
-   - `1.00pm to 3.00pm`
-   - `4.00pm to 6.00pm`
-   - `6.00pm to 8.00pm`
-
-Notes:
-1. Identity/profile values are read from environment variables only.
-2. One booking is submitted per tool call.
-3. Past dates are rejected.
-4. MCP always submits to `TSX_URL`.
+| File | Purpose |
+| --- | --- |
+| `manifest.json` | MV3 manifest |
+| `config.js` | Form URL, entry ids, time slots (shared by all scripts) |
+| `content.js` | Runs on each form page, fills it and clicks Next/Submit |
+| `popup.html/js` | Calendar + slot picker, queue status, history |
+| `options.html/js` | Profile and form settings |
+| `background.js` | Runs the queue one job at a time; desktop notifications |
