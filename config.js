@@ -37,3 +37,7 @@ const MAX_PAGE_LOADS = 8;
 // How long the content script keeps retrying a field that Google's own
 // scripts have not picked up yet (they bind their handlers after page load).
 const FIELD_RETRY_MS = 8000;
+
+// Bookings close at this hour (24h clock) on the working day before the slot,
+// per the gym's T&Cs — so Friday 4 pm is the cutoff for Monday.
+const CUTOFF_HOUR = 16;

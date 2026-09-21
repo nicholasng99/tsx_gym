@@ -77,8 +77,12 @@ function renderCalendar() {
     const btn = document.createElement("button");
     btn.className = "day";
     btn.textContent = day;
-    const weekend = date.getDay() === 0 || date.getDay() === 6;
-    if (weekend || iso < todayIso) btn.disabled = true;
+    if (isWeekend(date)) {
+      btn.disabled = true;
+    } else if (!isBookable(date)) {
+      btn.disabled = true;
+      btn.title = iso < todayIso ? "Past" : "Booking closed — cutoff is 4 pm the working day before";
+    }
     if (iso === todayIso) btn.classList.add("today");
     if (selected.has(iso)) btn.classList.add("selected");
     btn.addEventListener("click", () => {
@@ -124,7 +128,7 @@ async function book() {
   }
   const pending = new Set(queue.filter((j) => j.status === "queued" || j.status === "running").map((j) => j.date));
   const jobs = [...selected.entries()]
-    .filter(([date]) => !pending.has(date))
+    .filter(([date]) => !pending.has(date) && isBookable(parseIsoDate(date)))
     .sort(([a], [b]) => (a < b ? -1 : 1))
     .map(([date, timeSlot]) => ({ id: `${Date.now()}-${date}`, date, timeSlot, status: "queued" }));
 
@@ -174,7 +178,32 @@ async function renderState() {
   if (!history.length) $("history").appendChild(muted("None yet"));
 }
 
+// ---- cutoff rule ----------------------------------------------------------
+
+function isWeekend(date) {
+  return date.getDay() === 0 || date.getDay() === 6;
+}
+
+// The last moment a slot on `date` can still be booked: CUTOFF_HOUR on the
+// previous working day.
+function bookingCutoff(date) {
+  const d = new Date(date);
+  do d.setDate(d.getDate() - 1);
+  while (isWeekend(d));
+  d.setHours(CUTOFF_HOUR, 0, 0, 0);
+  return d;
+}
+
+function isBookable(date, now = new Date()) {
+  return !isWeekend(date) && now < bookingCutoff(date);
+}
+
 // ---- helpers --------------------------------------------------------------
+
+function parseIsoDate(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
 
 function muted(text) {
   const li = document.createElement("li");
@@ -188,8 +217,7 @@ function isProfileComplete(p) {
 }
 
 function formatDate(iso) {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString(undefined, {
+  return parseIsoDate(iso).toLocaleDateString(undefined, {
     weekday: "short",
     day: "numeric",
     month: "short",

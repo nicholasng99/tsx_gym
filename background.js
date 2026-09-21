@@ -79,7 +79,7 @@ async function tabExists(tabId) {
 function notify(job) {
   chrome.notifications.create({
     type: "basic",
-    iconUrl: "icon.png",
+    iconUrl: "icons/icon128.png",
     title: job.status === "done" ? "Gym slot booked" : "Gym booking failed",
     message:
       job.status === "done"

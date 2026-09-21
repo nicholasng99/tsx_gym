@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="popup">
+<main class="card">
   <h1>TSX Gym Booker</h1>
 
   <div id="setup-warning" class="warn hidden">
@@ -18,6 +19,7 @@
     <button class="icon-btn" id="next-month" title="Next month">&rsaquo;</button>
   </div>
   <div class="cal-grid" id="calendar"></div>
+  <p class="hint">Bookings close at 4 pm the working day before (Friday 4 pm for Monday).</p>
 
   <label>Time slot for selected days
     <select id="slot"></select>
@@ -37,6 +39,7 @@
   <ul id="history" class="history"></ul>
 
   <p class="footer"><a href="#" id="open-options-2">Settings</a></p>
+</main>
 
   <script src="config.js"></script>
   <script src="popup.js"></script>
