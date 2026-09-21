@@ -46,8 +46,12 @@ Clicking **Book** does not submit anything by itself — it adds one job per
 selected day to the queue, and the queue runs them one after another in a
 single tab. For each job the extension opens the form, fills the email page,
 the booking details and the declarations, submits, and moves on when the
-confirmation page appears. The **Queue** pane shows each job's live status and
-a desktop notification fires for each result.
+confirmation page appears. A desktop notification fires for each result.
+
+The **Job queue** section at the bottom of the popup is collapsed by default —
+it is mainly for checking on or troubleshooting a run. Its header shows how
+many jobs are queued or running; expand it to see each job's live status and,
+for failures, the reason.
 
 Rules:
 

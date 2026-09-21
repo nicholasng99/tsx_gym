@@ -184,6 +184,8 @@ async function renderState() {
     })
   );
   if (!active.length) $("queue").appendChild(muted("Nothing queued"));
+  const inFlight = queue.filter((j) => j.status === "queued" || j.status === "running").length;
+  $("queue-count").textContent = inFlight ? `· ${inFlight}` : "";
 }
 
 // ---- cutoff rule ----------------------------------------------------------

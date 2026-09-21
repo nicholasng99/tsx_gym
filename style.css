@@ -10,10 +10,9 @@
 
 html, body { margin: 0; padding: 0; }
 body { font: 14px/1.4 system-ui, sans-serif; color: var(--text); background: #fff; }
-/* The popup has a fixed height and never scrolls itself; the queue and
-   history panes at the bottom take whatever space is left and scroll inside. */
-.popup { width: 320px; height: 580px; overflow: hidden; }
-.popup .card { display: flex; flex-direction: column; height: 100%; box-sizing: border-box; }
+/* The popup sizes to its content and never scrolls itself; the lists inside
+   it (selected days, job queue) cap their height and scroll internally. */
+.popup { width: 320px; overflow: hidden; }
 .options { max-width: 580px; margin: 0 auto; }
 
 .card { padding: 12px 14px; }
@@ -66,8 +65,14 @@ button.secondary:hover { background: #e6e0d9; }
 .actions select { flex: 1; min-width: 0; margin: 0; padding: 7px 8px; font-size: 13px; }
 .actions button { padding: 8px 12px; font-size: 13px; white-space: nowrap; }
 
-.pane { display: flex; flex-direction: column; flex: 1; min-height: 0; margin-top: 10px; }
-.pane ul { flex: 1; min-height: 0; overflow-y: auto; padding: 6px 6px 6px 22px; margin: 0; border: 1px solid #ece8e3; border-radius: 10px; background: #fcfbfa; font-size: 13px; }
+.pane { margin-top: 10px; }
+.pane summary { cursor: pointer; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; list-style: none; display: flex; align-items: center; gap: 6px; user-select: none; }
+.pane summary::-webkit-details-marker { display: none; }
+.pane summary::before { content: ""; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform .15s; }
+.pane[open] summary::before { transform: rotate(45deg); }
+.pane summary:hover { color: var(--accent-dark); }
+.pane .count { text-transform: none; letter-spacing: 0; color: var(--accent-dark); font-weight: 600; }
+.pane ul { max-height: 110px; overflow-y: auto; padding: 6px 6px 6px 22px; margin: 6px 0 0; border: 1px solid #ece8e3; border-radius: 10px; background: #fcfbfa; font-size: 13px; }
 .pane li { margin-bottom: 2px; }
 .pane ul, .selected { scrollbar-width: thin; scrollbar-color: #d9d3cc transparent; }
 .pane ul::-webkit-scrollbar, .selected::-webkit-scrollbar { width: 6px; }
