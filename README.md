@@ -69,6 +69,25 @@ Rules:
 - If a reCAPTCHA image challenge appears (rare when signed in), solve it in
   the tab and the job continues — the extension never touches the captcha.
 
+## The toolbar icon
+
+The arm in the toolbar grows with how many days you have booked in the week
+being planned:
+
+| Booked days | Icon |
+| --- | --- |
+| 0–1 | skinny arm |
+| 2 | medium arm |
+| 3 or more | full flex |
+
+"The week being planned" is the current Mon–Fri week, switching to next week
+once Friday's 4 pm cutoff has passed (so over the weekend and on Monday it
+already reflects what you booked for the new week). The icon updates whenever
+a booking completes and re-checks hourly; hovering it shows the count.
+
+The three images live in `icons/` as `skinny-*`, `medium-*` and `max-*` at
+16/32/48/128 px.
+
 ## Sharing
 
 Anyone can install it the same way (Developer mode → Load unpacked). Share
@@ -103,8 +122,8 @@ appears as `[[<id>,`. Update the JSON, save, done. The cutoff hour is
 | `manifest.json` | MV3 manifest |
 | `config.js` | Form URL, entry ids, time slots, cutoff hour (shared by all scripts) |
 | `content.js` | Runs on each form page, fills it and clicks Next/Submit |
-| `background.js` | Runs the queue one job at a time; desktop notifications |
+| `background.js` | Runs the queue one job at a time; notifications; toolbar icon stage |
 | `popup.html/js` | Calendar + slot picker, queue status |
 | `options.html/js` | Profile and form settings |
 | `style.css` | Shared styling |
-| `icons/` | 💪 toolbar icon (16–128 px) |
+| `icons/` | Toolbar icon stages: skinny / medium / max at 16–128 px |
