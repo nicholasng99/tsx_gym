@@ -6,14 +6,17 @@
   --bg: #f3efea;
   --text: #222;
   --muted: #777;
-  --radius: 14px;
 }
 
-body { font: 14px/1.4 system-ui, sans-serif; margin: 0; padding: 8px; color: var(--text); background: var(--bg); }
-.popup { width: 316px; }
-.options { max-width: 580px; margin: 0 auto; padding: 24px 8px; }
+html, body { margin: 0; padding: 0; }
+body { font: 14px/1.4 system-ui, sans-serif; color: var(--text); background: #fff; overflow-x: hidden; }
+/* Keep the popup scrollable for long queues, but without a visible scrollbar. */
+body { scrollbar-width: none; }
+body::-webkit-scrollbar { display: none; }
+.popup { width: 320px; }
+.options { max-width: 580px; margin: 0 auto; }
 
-.card { background: #fff; border-radius: var(--radius); padding: 14px; box-shadow: 0 1px 3px rgba(0, 0, 0, .08); }
+.card { padding: 14px; }
 
 h1 { font-size: 16px; margin: 0 0 12px; }
 h2 { font-size: 12px; margin: 16px 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
