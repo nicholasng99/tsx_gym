@@ -17,7 +17,7 @@ HTML/CSS/JS loaded straight from this folder.
    *Sharing* below).
 2. Open `chrome://extensions` and turn on **Developer mode** (top right).
 3. Click **Load unpacked** and select the folder containing `manifest.json`.
-4. Click the orange dumbbell icon → **Settings**. Enter your name, company
+4. Click the 💪 icon in the toolbar → **Settings**. Enter your name, company
    email, company name and contact number, then **Save**.
 
 Chrome must be signed in to a Google account (any account). It is only used so
@@ -84,4 +84,4 @@ appears as `[[<id>,`. Update the JSON, save, done. The cutoff hour is
 | `popup.html/js` | Calendar + slot picker, queue status, history |
 | `options.html/js` | Profile and form settings |
 | `style.css` | Shared styling |
-| `icons/` | Extension icon |
+| `icons/` | 💪 toolbar icon (16–128 px) |
