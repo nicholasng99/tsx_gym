@@ -13,8 +13,16 @@ HTML/CSS/JS loaded straight from this folder.
 
 ## Install
 
-1. Get the folder — either clone this branch or unzip the shared copy (see
-   *Sharing* below).
+**From the Chrome Web Store (recommended):** install
+[TSX Gym Booker](https://chromewebstore.google.com/detail/mbknanbpdgjojhmcdcbjamonckdmjfgi)
+(unlisted, so it only shows up via this link). Then click the 💪 icon in the
+toolbar → **Settings**, enter your name, company email, company name and
+contact number, and **Save**. Store installs update automatically.
+
+**From source:**
+
+1. Get the folder — either clone this repo or download the zip from the
+   [latest release](https://github.com/nicholasng99/tsx_gym/releases/latest).
 2. Open `chrome://extensions` and turn on **Developer mode** (top right).
 3. Click **Load unpacked** and select the folder containing `manifest.json`.
 4. Click the 💪 icon in the toolbar → **Settings**. Enter your name, company
@@ -90,8 +98,9 @@ The three images live in `icons/` as `skinny-*`, `medium-*` and `max-*` at
 
 ## Sharing
 
-Anyone can install it the same way (Developer mode → Load unpacked). Share
-only the extension files, not a copy of your whole working tree:
+The easiest way to share is the
+[Chrome Web Store link](https://chromewebstore.google.com/detail/mbknanbpdgjojhmcdcbjamonckdmjfgi).
+If someone needs to load it unpacked instead, share only the extension files, not a copy of your whole working tree:
 
 ```
 manifest.json  config.js  content.js  background.js
