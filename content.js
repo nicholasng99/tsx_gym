@@ -68,7 +68,7 @@
   // ---- DOM helpers --------------------------------------------------------
 
   // Each question lives in a div[role=listitem]; a child element carries a
-  // data-params attribute that embeds the entry id as "[[<id>," — that is the
+  // data-params attribute that embeds the entry id as "[[<id>,". That is the
   // most stable hook Google Forms exposes.
   function question(entryId) {
     const marker = "[[" + entryId + ",";

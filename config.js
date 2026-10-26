@@ -39,5 +39,5 @@ const MAX_PAGE_LOADS = 8;
 const FIELD_RETRY_MS = 8000;
 
 // Bookings close at this hour (24h clock) on the working day before the slot,
-// per the gym's T&Cs — so Friday 4 pm is the cutoff for Monday.
+// per the gym's T&Cs, so Friday 4 pm is the cutoff for Monday.
 const CUTOFF_HOUR = 16;
