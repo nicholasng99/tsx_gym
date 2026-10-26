@@ -172,9 +172,12 @@
 
   async function finish() {
     await update({ status: "done", step: "booked", finishedAt: Date.now() });
-    const { history = [] } = await chrome.storage.local.get("history");
+    const { history = [], totalBooked } = await chrome.storage.local.get(["history", "totalBooked"]);
+    // History is capped, so the all-time count is kept separately. Installs
+    // from before the counter existed start from their history length.
+    const total = (totalBooked ?? history.length) + 1;
     history.unshift({ date: job.date, timeSlot: job.timeSlot, bookedAt: Date.now() });
-    await chrome.storage.local.set({ history: history.slice(0, 50) });
+    await chrome.storage.local.set({ history: history.slice(0, 50), totalBooked: total });
   }
 
   async function fail(error) {

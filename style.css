@@ -19,6 +19,31 @@ body { font: 14px/1.4 system-ui, sans-serif; color: var(--text); background: #ff
 
 .titlebar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .titlebar h1 { margin: 0; }
+.title { display: flex; align-items: baseline; gap: 12px; }
+
+/* Total days booked. The number shares the title's baseline and the fire
+   emoji is drawn behind it, centred on the number. The flame's body sits low
+   in the emoji's box, so it is lifted past centre. The outer .streak stays
+   still and is padded to cover the flame, so hovering it is steady while the
+   inner number and flame move. */
+.streak { padding: 6px 4px; margin: -6px -4px; font-size: 12px; font-weight: 800; line-height: 1; color: #fff; text-shadow: 0 0 2px #a63c00, 0 0 2px #a63c00; cursor: default; }
+#total-booked { position: relative; isolation: isolate; display: inline-block; transform-origin: 50% 120%; }
+#total-booked::before { content: "🔥"; position: absolute; z-index: -1; left: 50%; top: 50%; transform: translate(-50%, -62%); font-size: 22px; line-height: 1; text-shadow: none; }
+/* Hovering makes the flame flicker, with the number moving along with it.
+   The origin is the flame's base, which sits below the number's box. */
+.streak:hover #total-booked { animation: burn 0.6s ease-in-out infinite alternate; }
+.streak:hover #total-booked::before { filter: drop-shadow(0 0 3px #ff9a1f); }
+@keyframes burn {
+  0%   { transform: scale(1, 1) rotate(-3deg); }
+  35%  { transform: scale(1.06, 1.14) rotate(2deg); }
+  70%  { transform: scale(0.97, 1.05) rotate(-1deg); }
+  100% { transform: scale(1.04, 1.18) rotate(3deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .streak:hover #total-booked { animation: none; }
+}
+/* Three digits are wider than the flame, so they shrink to fit inside it. */
+.streak.wide { font-size: 10px; letter-spacing: -0.5px; }
 .titlebar .icon-btn { padding: 4px; display: inline-flex; color: var(--muted); }
 .titlebar .icon-btn:hover { color: var(--accent-dark); background: var(--accent-soft); }
 

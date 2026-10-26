@@ -12,12 +12,14 @@
   <iframe id="popup" title="Popup"></iframe>
   <script>
     // Load the real popup.html and slip the chrome stub in ahead of its scripts.
-    fetch("/popup.html")
+    // Every file gets a fresh query string so edits show up on reload.
+    const v = Date.now();
+    fetch("/popup.html", { cache: "no-store" })
       .then((r) => r.text())
       .then((html) => {
         document.getElementById("popup").srcdoc = html
-          .replace(/(src|href)="(?!https?:|#)/g, '$1="/')
-          .replace('<script src="/config.js">', '<script src="/.claude/preview/chrome-stub.js"><\/script><script src="/config.js">');
+          .replace('<script src="config.js">', '<script src=".claude/preview/chrome-stub.js"><\/script><script src="config.js">')
+          .replace(/(src|href)="(?!https?:|#)([^"]+)"/g, `$1="/$2?v=${v}"`);
       });
   </script>
 </body>

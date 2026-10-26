@@ -160,12 +160,17 @@ async function book() {
 // ---- state ----------------------------------------------------------------
 
 async function renderState() {
-  const { queue = [], profile, history = [] } = await chrome.storage.local.get([
+  const { queue = [], profile, history = [], totalBooked } = await chrome.storage.local.get([
     "queue",
     "profile",
     "history",
+    "totalBooked",
   ]);
   $("setup-warning").classList.toggle("hidden", isProfileComplete(profile));
+  const total = totalBooked ?? history.length;
+  $("total-booked").textContent = total;
+  $("total-booked").parentElement.classList.toggle("wide", total >= 100);
+  $("total-booked").parentElement.classList.toggle("hidden", total < 1);
 
   booked.clear();
   for (const h of history) if (!booked.has(h.date)) booked.set(h.date, h.timeSlot);

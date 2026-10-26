@@ -17,6 +17,7 @@
     profile: { name: "Preview", email: "preview@example.com", company: "Preview", phone: "0" },
     history: [{ date: inDays(-3), timeSlot: "11.00am to 1.00pm", bookedAt: Date.now() }],
     queue: [],
+    totalBooked: 12,
   };
   const listeners = [];
 
