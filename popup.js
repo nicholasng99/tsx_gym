@@ -90,6 +90,10 @@ function renderCalendar() {
       btn.title = pending.get(iso) === "running" ? "Booking now…" : "Queued";
     } else if (isWeekend(date)) {
       btn.disabled = true;
+    } else if (holidayName(date)) {
+      btn.classList.add("holiday");
+      btn.disabled = true;
+      btn.title = holidayName(date);
     } else if (!isBookable(date)) {
       btn.disabled = true;
       btn.title = iso < todayIso ? "Past" : "Booking closed — cutoff is 4 pm the working day before";
@@ -188,32 +192,7 @@ async function renderState() {
   $("queue-count").textContent = inFlight ? `· ${inFlight}` : "";
 }
 
-// ---- cutoff rule ----------------------------------------------------------
-
-function isWeekend(date) {
-  return date.getDay() === 0 || date.getDay() === 6;
-}
-
-// The last moment a slot on `date` can still be booked: CUTOFF_HOUR on the
-// previous working day.
-function bookingCutoff(date) {
-  const d = new Date(date);
-  do d.setDate(d.getDate() - 1);
-  while (isWeekend(d));
-  d.setHours(CUTOFF_HOUR, 0, 0, 0);
-  return d;
-}
-
-function isBookable(date, now = new Date()) {
-  return !isWeekend(date) && now < bookingCutoff(date);
-}
-
 // ---- helpers --------------------------------------------------------------
-
-function parseIsoDate(iso) {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d);
-}
 
 function muted(text) {
   const li = document.createElement("li");
@@ -232,9 +211,4 @@ function formatDate(iso) {
     day: "numeric",
     month: "short",
   });
-}
-
-function toIsoDate(d) {
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }

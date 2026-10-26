@@ -38,7 +38,9 @@ Settings.
 2. Click the days you want on the calendar. Weekends, today, and any day whose
    cutoff has passed are greyed out — bookings close at **4 pm on the working
    day before** the slot, so Friday 4 pm is the cutoff for Monday (per the
-   gym's T&Cs). Days you have already booked are shown in green (hover for the
+   gym's T&Cs). Singapore public holidays are shown in blue (hover for
+   the name), since the gym is closed, and they do not count as working days
+   for the cutoff. Days you have already booked are shown in green (hover for the
    slot); days waiting in the queue have a dashed orange outline. Neither can
    be selected again, since the gym allows one slot per person per day.
 3. Pick a time slot from the dropdown. It applies to every selected day; each
@@ -89,7 +91,8 @@ being planned:
 | 3 or more | full flex |
 
 "The week being planned" is the current Mon–Fri week, switching to next week
-once Friday's 4 pm cutoff has passed (so over the weekend and on Monday it
+once the cutoff for next Monday has passed (Friday 4 pm, or Thursday when
+Friday is a public holiday) (so over the weekend and on Monday it
 already reflects what you booked for the new week). The icon updates whenever
 a booking completes and re-checks hourly; hovering it shows the count.
 
@@ -103,7 +106,7 @@ The easiest way to share is the
 If someone needs to load it unpacked instead, share only the extension files, not a copy of your whole working tree:
 
 ```
-manifest.json  config.js  content.js  background.js
+manifest.json  config.js  holidays.js  content.js  background.js
 popup.html  popup.js  options.html  options.js  style.css
 icons/
 ```
@@ -124,12 +127,38 @@ page, view source, search for `FB_PUBLIC_LOAD_DATA_`; each question's id
 appears as `[[<id>,`. Update the JSON, save, done. The cutoff hour is
 `CUTOFF_HOUR` in `config.js`.
 
+## Public holidays
+
+The holiday list is `SG_PUBLIC_HOLIDAYS` in [`holidays.js`](holidays.js),
+copied from MOM's "Public Holidays for <year>" datasets on
+[data.gov.sg](https://data.gov.sg), including the "(Observed)" in-lieu days.
+It is bundled rather than fetched, so the extension makes no network requests
+of its own. MOM publishes the next year around June or July. Add those dates
+and release an update. Days beyond the list are treated as normal working
+days.
+
+## Previewing the popup
+
+To see popup changes without reloading the extension, serve the folder and
+open the preview page.
+
+```
+python -m http.server 8765
+```
+
+Then open http://localhost:8765/.claude/preview/. It loads the real
+`popup.html` with an in-memory stand-in for `chrome.storage`
+(`.claude/preview/chrome-stub.js`), so the calendar works but nothing is
+booked. The `.claude/` folder is not part of the extension, so leave it out
+when sharing.
+
 ## Files
 
 | File | Purpose |
 | --- | --- |
 | `manifest.json` | MV3 manifest |
 | `config.js` | Form URL, entry ids, time slots, cutoff hour (shared by all scripts) |
+| `holidays.js` | Singapore public holidays and the closed-day / cutoff rules (popup and background) |
 | `content.js` | Runs on each form page, fills it and clicks Next/Submit |
 | `background.js` | Runs the queue one job at a time; notifications; toolbar icon stage |
 | `popup.html/js` | Calendar + slot picker, queue status |

@@ -53,9 +53,12 @@ button.secondary:hover { background: #e6e0d9; }
 .day.selected, .day.selected:hover { background: var(--accent); color: #fff; }
 .day.booked:disabled { background: #2e9e5b; color: #fff; }
 .day.pending:disabled { background: transparent; color: var(--accent-dark); outline: 2px dashed var(--accent); outline-offset: -2px; }
+.day.holiday:disabled { background: #3b6fd8; color: #fff; }
 .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: -1px; }
 .swatch.booked { background: #2e9e5b; }
 .swatch.pending { outline: 2px dashed var(--accent); outline-offset: -2px; }
+.swatch.holiday { background: #3b6fd8; }
+.swatch.selected { background: var(--accent); }
 
 .day-list { list-style: none; padding: 0; margin: 0 0 8px; max-height: 84px; overflow-y: auto; }
 .day-list li { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }

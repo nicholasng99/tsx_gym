@@ -1,7 +1,7 @@
 // Runs the booking queue: one job at a time, in a single tab. The popup only
 // appends "queued" jobs; everything else happens here or in content.js.
 
-importScripts("config.js");
+importScripts("config.js", "holidays.js");
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== "local") return;
@@ -101,15 +101,17 @@ function notify(job) {
 
 // ---- toolbar icon ---------------------------------------------------------
 // The arm grows with the number of days booked in the week being planned:
-// the current Mon–Fri week, or next week once Friday's cutoff has passed.
+// the current Mon–Fri week, or next week once next Monday's cutoff has passed
+// (Friday 4 pm, or Thursday when Friday is a public holiday).
 
 function targetWeekRange(now) {
   const day = now.getDay(); // 0 = Sun
   const monday = new Date(now);
   monday.setHours(0, 0, 0, 0);
   monday.setDate(now.getDate() - ((day + 6) % 7));
-  const pastFridayCutoff = day === 0 || day === 6 || (day === 5 && now.getHours() >= CUTOFF_HOUR);
-  if (pastFridayCutoff) monday.setDate(monday.getDate() + 7);
+  const nextMonday = new Date(monday);
+  nextMonday.setDate(monday.getDate() + 7);
+  if (now >= bookingCutoff(nextMonday)) monday.setDate(monday.getDate() + 7);
   const friday = new Date(monday);
   friday.setDate(monday.getDate() + 4);
   return [toIsoDate(monday), toIsoDate(friday)];
@@ -128,9 +130,4 @@ async function updateIcon() {
   for (const size of [16, 32, 48, 128]) path[size] = `icons/${stage}-${size}.png`;
   await chrome.action.setIcon({ path });
   await chrome.action.setTitle({ title: `TSX Gym Booker — ${count} day${count === 1 ? "" : "s"} booked this week` });
-}
-
-function toIsoDate(d) {
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
