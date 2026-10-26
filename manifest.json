@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TSX Gym Booker",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Fills and submits the TSX gym booking Google Form for a chosen date and time slot.",
   "permissions": [
     "storage",
