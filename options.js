@@ -8,6 +8,15 @@ const $ = (id) => document.getElementById(id);
   $("ids").value = JSON.stringify(settings.ids || TSX_DEFAULTS.ids, null, 2);
 })();
 
+// Takes effect straight away, separate from Save.
+$("darkMode").checked = isDarkMode();
+$("darkMode").addEventListener("change", () => {
+  try {
+    localStorage.setItem("theme", $("darkMode").checked ? "dark" : "light");
+  } catch {}
+  applyTheme($("darkMode").checked);
+});
+
 $("save").addEventListener("click", async () => {
   const profile = {};
   for (const f of fields) profile[f] = $(f).value.trim();

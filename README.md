@@ -48,7 +48,8 @@ Settings.
    slot for one of them.
 4. Click **Book (N)**.
 
-The ⚙ button in the top-right opens Settings.
+The ⚙ button in the top-right opens Settings, which also has a **Dark mode**
+switch. It applies straight away, without pressing Save.
 
 ### The queue
 
@@ -106,7 +107,7 @@ The easiest way to share is the
 If someone needs to load it unpacked instead, share only the extension files, not a copy of your whole working tree:
 
 ```
-manifest.json  config.js  holidays.js  content.js  background.js
+manifest.json  config.js  holidays.js  theme.js  content.js  background.js
 popup.html  popup.js  options.html  options.js  style.css
 icons/
 ```
@@ -159,6 +160,7 @@ when sharing.
 | `manifest.json` | MV3 manifest |
 | `config.js` | Form URL, entry ids, time slots, cutoff hour (shared by all scripts) |
 | `holidays.js` | Singapore public holidays and the closed-day / cutoff rules (popup and background) |
+| `theme.js` | Applies the dark mode setting to the popup and settings page |
 | `content.js` | Runs on each form page, fills it and clicks Next/Submit |
 | `background.js` | Runs the queue one job at a time; notifications; toolbar icon stage |
 | `popup.html/js` | Calendar + slot picker, queue status |

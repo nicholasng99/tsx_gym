@@ -11,10 +11,13 @@
 <body>
   <iframe id="popup" title="Popup"></iframe>
   <script>
-    // Load the real popup.html and slip the chrome stub in ahead of its scripts.
-    // Every file gets a fresh query string so edits show up on reload.
+    // Load the real popup.html (or options.html with ?page=options) and slip
+    // the chrome stub in ahead of its scripts. Every file gets a fresh query
+    // string so edits show up on reload.
+    const page = new URLSearchParams(location.search).get("page") === "options" ? "options" : "popup";
+    if (page === "options") document.getElementById("popup").style.width = "600px";
     const v = Date.now();
-    fetch("/popup.html", { cache: "no-store" })
+    fetch(`/${page}.html`, { cache: "no-store" })
       .then((r) => r.text())
       .then((html) => {
         document.getElementById("popup").srcdoc = html

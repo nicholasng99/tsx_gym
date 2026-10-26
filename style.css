@@ -6,10 +6,51 @@
   --bg: #f3efea;
   --text: #222;
   --muted: #777;
+  --surface: #fff;
+  --border: #d5d0ca;
+  --disabled: #cfc9c2;
+  --day-off: #c4bfb8;
+  --secondary: #f0ece7;
+  --secondary-hover: #e6e0d9;
+  --secondary-text: #333;
+  --warn-bg: #fff8e1;
+  --warn-border: #ffe08a;
+  --pane-bg: #fcfbfa;
+  --pane-border: #ece8e3;
+  --scrollbar: #d9d3cc;
+  --running: #555;
+  --done: #1b7f3b;
+  --failed: #b3261e;
+}
+
+/* Set by theme.js from the Settings toggle. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --accent-dark: #ff9a4a;
+  --accent-soft: #3a2a1e;
+  --accent-tint: #4d3524;
+  --bg: #1a1816;
+  --text: #ece8e3;
+  --muted: #9a948d;
+  --surface: #211f1d;
+  --border: #45403b;
+  --disabled: #4a4540;
+  --day-off: #5a554f;
+  --secondary: #2e2b28;
+  --secondary-hover: #3a3632;
+  --secondary-text: #ddd;
+  --warn-bg: #3a3214;
+  --warn-border: #6b5a1e;
+  --pane-bg: #262321;
+  --pane-border: #36322e;
+  --scrollbar: #4a4540;
+  --running: #bbb;
+  --done: #5cc47f;
+  --failed: #ff8a80;
 }
 
 html, body { margin: 0; padding: 0; }
-body { font: 14px/1.4 system-ui, sans-serif; color: var(--text); background: #fff; }
+body { font: 14px/1.4 system-ui, sans-serif; color: var(--text); background: var(--surface); }
 /* The popup sizes to its content and never scrolls itself; the lists inside
    it (selected days, job queue) cap their height and scroll internally. */
 .popup { width: 320px; overflow: hidden; }
@@ -50,17 +91,17 @@ body { font: 14px/1.4 system-ui, sans-serif; color: var(--text); background: #ff
 h1 { font-size: 16px; margin: 0 0 12px; }
 h2 { font-size: 12px; margin: 0 0 4px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
 label { display: block; margin-bottom: 10px; font-weight: 600; }
-input, select, textarea { display: block; width: 100%; box-sizing: border-box; margin-top: 4px; padding: 7px 10px; font: inherit; font-weight: 400; border: 1px solid #d5d0ca; border-radius: 10px; background: #fff; }
+input, select, textarea { display: block; width: 100%; box-sizing: border-box; margin-top: 4px; padding: 7px 10px; font: inherit; font-weight: 400; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); }
 input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
 textarea { font-family: ui-monospace, monospace; font-size: 12px; }
 button { padding: 8px 16px; font: inherit; font-weight: 600; color: #fff; background: var(--accent); border: 0; border-radius: 999px; cursor: pointer; }
 button:hover:not(:disabled) { background: var(--accent-dark); }
-button:disabled { background: #cfc9c2; cursor: default; }
-button.secondary { background: #f0ece7; color: #333; }
-button.secondary:hover { background: #e6e0d9; }
+button:disabled { background: var(--disabled); cursor: default; }
+button.secondary { background: var(--secondary); color: var(--secondary-text); }
+button.secondary:hover { background: var(--secondary-hover); }
 
 .status { margin-top: 12px; min-height: 1.4em; }
-.warn { background: #fff8e1; border: 1px solid #ffe08a; padding: 8px 10px; border-radius: 10px; margin-bottom: 12px; }
+.warn { background: var(--warn-bg); border: 1px solid var(--warn-border); padding: 8px 10px; border-radius: 10px; margin-bottom: 12px; }
 .hidden { display: none; }
 .muted { color: var(--muted); }
 .hint { margin: -2px 0 8px; font-size: 12px; color: var(--muted); }
@@ -73,7 +114,7 @@ button.secondary:hover { background: #e6e0d9; }
 .dow { text-align: center; font-size: 11px; color: var(--muted); padding-bottom: 2px; }
 .day { padding: 4px 0; background: var(--accent-soft); color: var(--text); font-weight: 500; border-radius: 8px; }
 .day:hover:not(:disabled) { background: var(--accent-tint); }
-.day:disabled { background: transparent; color: #c4bfb8; cursor: default; }
+.day:disabled { background: transparent; color: var(--day-off); cursor: default; }
 .day.today { outline: 1px solid var(--accent); outline-offset: -1px; }
 .day.selected, .day.selected:hover { background: var(--accent); color: #fff; }
 .day.booked:disabled { background: #2e9e5b; color: #fff; }
@@ -100,11 +141,20 @@ button.secondary:hover { background: #e6e0d9; }
 .pane[open] summary::before { transform: rotate(45deg); }
 .pane summary:hover { color: var(--accent-dark); }
 .pane .count { text-transform: none; letter-spacing: 0; color: var(--accent-dark); font-weight: 600; }
-.pane ul { max-height: 110px; overflow-y: auto; padding: 6px 6px 6px 22px; margin: 6px 0 0; border: 1px solid #ece8e3; border-radius: 10px; background: #fcfbfa; font-size: 13px; }
+.pane ul { max-height: 110px; overflow-y: auto; padding: 6px 6px 6px 22px; margin: 6px 0 0; border: 1px solid var(--pane-border); border-radius: 10px; background: var(--pane-bg); font-size: 13px; }
 .pane li { margin-bottom: 2px; }
-.pane ul, .day-list { scrollbar-width: thin; scrollbar-color: #d9d3cc transparent; }
+.pane ul, .day-list { scrollbar-width: thin; scrollbar-color: var(--scrollbar) transparent; }
 .pane ul::-webkit-scrollbar, .day-list::-webkit-scrollbar { width: 6px; }
-.pane ul::-webkit-scrollbar-thumb, .day-list::-webkit-scrollbar-thumb { background: #d9d3cc; border-radius: 3px; }
-.queue li.running { color: #555; }
-.queue li.done { color: #1b7f3b; }
-.queue li.failed { color: #b3261e; }
+.pane ul::-webkit-scrollbar-thumb, .day-list::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
+.queue li.running { color: var(--running); }
+.queue li.done { color: var(--done); }
+.queue li.failed { color: var(--failed); }
+
+/* settings */
+.switch { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.switch input { appearance: none; position: relative; flex: none; width: 36px; height: 20px; margin: 0; padding: 0; border: 0; border-radius: 999px; background: var(--disabled); cursor: pointer; transition: background .15s; }
+.switch input::before { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .15s; }
+.switch input:checked { background: var(--accent); }
+.switch input:checked::before { transform: translateX(16px); }
+.switch input:focus { outline: none; }
+.switch input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
