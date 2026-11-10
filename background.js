@@ -10,13 +10,14 @@ chrome.storage.onChanged.addListener((changes, area) => {
   const before = changes.queue.oldValue || [];
   const after = changes.queue.newValue || [];
 
-  // Notify for each job that just finished.
+  startNext();
+
+  // Notify for each job that just finished. This runs after startNext so a
+  // notification error can never hold up the queue.
   for (const job of after) {
     const prev = before.find((j) => j.id === job.id);
     if (prev && prev.status === "running" && job.status !== "running") notify(job);
   }
-
-  startNext();
 });
 
 chrome.tabs.onRemoved.addListener(async (tabId) => {
@@ -39,12 +40,34 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === "icon-refresh") updateIcon();
+  if (alarm.name === "queue-check") checkQueue();
 });
 
+// The queue normally moves on from storage change events alone. This check
+// runs every minute while jobs are waiting, as a backstop for when that chain
+// breaks: it fails a job that has run past its timeout without its page ever
+// loading again, and starts the next job if nothing else did.
+async function checkQueue() {
+  const { queue = [] } = await chrome.storage.local.get("queue");
+  const stuck = queue.find((j) => j.status === "running" && Date.now() - j.startedAt > JOB_TIMEOUT_MS);
+  if (stuck) {
+    Object.assign(stuck, { status: "failed", error: "Timed out before reaching the confirmation page", finishedAt: Date.now() });
+    await chrome.storage.local.set({ queue }); // the change event starts the next job
+    return;
+  }
+  startNext();
+}
+
 let starting = false;
+// Set when startNext is called while it is already running. That call may
+// carry a change the running one has already read past, so it runs again.
+let startAgain = false;
 
 async function startNext() {
-  if (starting) return;
+  if (starting) {
+    startAgain = true;
+    return;
+  }
   starting = true;
   try {
     const { queue = [], settings, runTabId } = await chrome.storage.local.get([
@@ -55,6 +78,7 @@ async function startNext() {
     if (queue.some((j) => j.status === "running")) return;
     const next = queue.find((j) => j.status === "queued");
     if (!next) {
+      await chrome.alarms.clear("queue-check");
       if (runTabId) await chrome.storage.local.set({ runTabId: null });
       return;
     }
@@ -63,6 +87,7 @@ async function startNext() {
     // page load, so it must find the job already in storage when it does.
     Object.assign(next, { status: "running", step: "opening form", pageLoads: 0, startedAt: Date.now() });
     await chrome.storage.local.set({ queue });
+    chrome.alarms.create("queue-check", { periodInMinutes: 1 });
 
     const formUrl = (settings && settings.formUrl) || TSX_DEFAULTS.formUrl;
     let tabId = runTabId;
@@ -75,6 +100,10 @@ async function startNext() {
     await chrome.storage.local.set({ runTabId: tabId });
   } finally {
     starting = false;
+    if (startAgain) {
+      startAgain = false;
+      startNext();
+    }
   }
 }
 
